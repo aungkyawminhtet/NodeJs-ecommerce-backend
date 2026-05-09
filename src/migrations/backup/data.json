@@ -1,0 +1,46 @@
+[
+  {
+    "roles": [],
+    "permits": [],
+    "_id": "69f33d88c42e6820a11f5c10",
+    "name": "ak",
+    "email": "ak@gmail.com",
+    "phone": "09111222343",
+    "password": "$2b$10$8YFKzmY06ew6Q5WaEi9JI.N.fFBV7xpx9kdbvaMKvF/Qm6EiJaFq6",
+    "createdAt": "2026-04-30T11:31:20.113Z",
+    "__v": 0
+  },
+  {
+    "_id": "69ff5270a8802b2bdcbec312",
+    "name": "user",
+    "email": "user@example.com",
+    "phone": "1234567890",
+    "password": "$2b$10$mkl7tNZJZsdyyPmrtmsdKO.K7YC0V3icNkKCq4PAO6BYJRAAdQm.m",
+    "roles": [],
+    "permits": [],
+    "createdAt": "2026-05-09T15:27:44.651Z",
+    "__v": 0
+  },
+  {
+    "_id": "69ff52984ee3d736fdba2684",
+    "name": "admin",
+    "email": "admin@example.com",
+    "phone": "09",
+    "password": "$2b$10$ukYPlFS63c1zoVEg58GZDO5zqmbdEJoLXKDur8LwUO.xkfpmaaB6.",
+    "roles": [],
+    "permits": [],
+    "createdAt": "2026-05-09T15:28:24.828Z",
+    "__v": 0
+  },
+  {
+    "_id": "69ff52a8fb7acda0fcc0006e",
+    "name": "manager",
+    "email": "manager@example.com",
+    "phone": "09445554665",
+    "password": "$2b$10$wO512h/q6jh5FSeDMG8/2elYmZ2E78Z4VvdSpXVwZzDSrmFzmShA6",
+    "roles": [],
+    "permits": [],
+    "createdAt": "2026-05-09T15:28:40.108Z",
+    "__v": 0
+  }
+]
