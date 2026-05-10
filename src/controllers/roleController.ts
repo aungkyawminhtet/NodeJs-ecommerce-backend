@@ -32,6 +32,7 @@ const createRole = async (
   res: e.Response,
   next: e.NextFunction,
 ) => {
+  
   let check = await Db.findOne({ name: req.body.name });
   if (check) {
     return next(new Error("Role already exists"));
@@ -53,14 +54,17 @@ const roleAddPermit = async (
   } else if (!permit) {
     return next(new Error("Permit not found"));
   } else {
-
-   await Db.findByIdAndUpdate(role._id, { $push: { permits: permit._id }})
-   let result = await Db.findById(role._id);
+    await Db.findByIdAndUpdate(role._id, { $push: { permits: permit._id } });
+    let result = await Db.findById(role._id);
     fMs(res, "Permit added to role successfully", result);
   }
 };
 
-const removePermitFromRole = async(req: e.Request, res: e.Response, next: e.NextFunction) => {
+const removePermitFromRole = async (
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+) => {
   let role = await Db.findById(req.body.roleId);
   let permit = await permitDb.findById(req.body.permitId);
   if (!role) {
@@ -68,8 +72,8 @@ const removePermitFromRole = async(req: e.Request, res: e.Response, next: e.Next
   } else if (!permit) {
     return next(new Error("Permit not found"));
   } else {
-   await Db.findByIdAndUpdate(role._id, { $pull: { permits: permit._id }})
-   let result = await Db.findById(role._id);
+    await Db.findByIdAndUpdate(role._id, { $pull: { permits: permit._id } });
+    let result = await Db.findById(role._id);
     fMs(res, "Permit removed from role successfully", result);
   }
 };

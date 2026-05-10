@@ -1,3 +1,8 @@
 
-
+//node package
 npm install -D @types/node @types/express
+npm i async-redis
+
+//redis cmd
+redis-cli
+redis-commander

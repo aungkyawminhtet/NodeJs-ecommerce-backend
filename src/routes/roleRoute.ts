@@ -9,12 +9,12 @@ const {
   removePermitFromRole,
 } = require("../controllers/roleController");
 const { roleSchema } = require("../utils/schema");
-const { validateBody } = require("../utils/validator");
+const { validateBody,validateToken } = require("../utils/validator");
 
 router.get("/", allRole);
 router.get("/:id", getRoleById);
 
-router.post("/", validateBody(roleSchema.bodySchema), createRole);
+router.post("/", validateToken, validateBody(roleSchema.bodySchema), createRole);
 
 router.post("/add/permit", validateBody(roleSchema.addPermitSchema), roleAddPermit);
 router.post("/remove/permit", validateBody(roleSchema.addPermitSchema), removePermitFromRole);

@@ -1,19 +1,19 @@
 [
   {
     "name": "admin",
-    "email": "admin@example.com",
+    "email": "admin@gmail.com",
     "phone": "09123321123",
     "password": "admin"
   },
   {
     "name": "user",
-    "email": "user@example.com",
+    "email": "user@gmail.com",
     "phone": "09234432344",
     "password": "user"
   },
   {
     "name" : "manager",
-    "email" : "manager@example.com",
+    "email" : "manager@gmail.com",
     "phone" : "09445554665",
     "password" : "manager"
   }
