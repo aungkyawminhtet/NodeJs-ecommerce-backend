@@ -1,19 +1,19 @@
 [
   {
-    "name": "admin",
-    "email": "admin@gmail.com",
+    "name": "Owner",
+    "email": "owner@gmail.com",
     "phone": "09123321123",
     "password": "admin"
   },
   {
-    "name": "user",
-    "email": "user@gmail.com",
+    "name": "Manager",
+    "email": "manager@gmail.com",
     "phone": "09234432344",
     "password": "user"
   },
   {
-    "name" : "manager",
-    "email" : "manager@gmail.com",
+    "name" : "Supervisor",
+    "email" : "supervisor@gmail.com",
     "phone" : "09445554665",
     "password" : "manager"
   }

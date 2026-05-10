@@ -17,10 +17,16 @@ const roleSchema = {
     user: joi.optional(),
   }),
 
-  addPermitSchema : joi.object({
-    roleId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
-    permitId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
-  })
+  addPermitSchema: joi.object({
+    roleId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+    permitId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+  }),
 };
 
 const userSchema = {
@@ -30,17 +36,45 @@ const userSchema = {
     phone: joi.string().min(10).max(15).required(),
     password: joi.string().min(6).required(),
   }),
+
+  addRoleSchema: joi.object({
+    userId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+    roleId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+  }),
+
+  addPermitSchema: joi.object({
+    userId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+    permitId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+  }),
 };
 
 const loginSchema = {
-  bodySchema : joi.object({
+  bodySchema: joi.object({
     email: joi.string().email().required(),
     password: joi.string().min(3).required(),
-  })
-}
+  }),
+};
 
 const idSchema = joi.object({
   id: joi.string().regex(/^[0-9a-fA-F]{24}$/),
 });
 
-module.exports = { permitSchema, roleSchema, userSchema, loginSchema, idSchema };
+module.exports = {
+  permitSchema,
+  roleSchema,
+  userSchema,
+  loginSchema,
+  idSchema,
+};
