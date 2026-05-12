@@ -9,9 +9,10 @@ const {
   removePermitFromRole,
 } = require("../controllers/roleController");
 const { roleSchema } = require("../utils/schema");
-const { validateBody,validateToken } = require("../utils/validator");
+const { validateBody,validateToken, hasAnyRole } = require("../utils/validator");
 
-router.get("/", allRole);
+router.get("/",[validateToken, hasAnyRole(["admin", "owner", "supervisor"])], allRole);
+
 router.get("/:id", getRoleById);
 
 router.post("/", validateToken, validateBody(roleSchema.bodySchema), createRole);

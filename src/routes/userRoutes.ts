@@ -11,6 +11,8 @@ const {
   login,
   addRole,
   addPermit,
+  removeRole,
+  removePermit,
 } = require("../controllers/userControllers");
 
 router.get("/", allUser);
@@ -24,13 +26,27 @@ router.post("/add/role", [
   addRole,
 ]);
 
+router.post("/remove/role", [
+  validateToken,
+  validateRole("owner"),
+  validateBody(userSchema.addRoleSchema),
+  removeRole,
+]);
+
 router.post(
   "/add/permit",
   validateToken,
-  validateRole("admin"),
+  validateRole("owner"),
   validateBody(userSchema.addPermitSchema),
   addPermit,
 );
+
+router.post("/remove/permit", [
+  validateToken,
+  validateRole("owner"),
+  validateBody(userSchema.addPermitSchema),
+  removePermit,
+]);
 
 router.post("/login", validateBody(loginSchema.bodySchema), login);
 

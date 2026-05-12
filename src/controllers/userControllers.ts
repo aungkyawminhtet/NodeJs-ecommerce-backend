@@ -59,13 +59,10 @@ const addRole = async (
   res: e.Response,
   next: e.NextFunction,
 ) => {
-  console.log("req.body", req.body);
   let user = await DB.findById(req.body.userId);
   let role = await roleDb.findById(req.body.roleId);
 
   let checkRole = await user.roles.filter((r: any) => r.toString() === role._id.toString());
-
-  console.log("checkRole", checkRole);
 
   if (!user) {
     return next(new Error("User not found"));
@@ -84,6 +81,35 @@ const addRole = async (
     .populate("roles permits", "-__v")
     .select("-__v -password");
   fMs(res, "Role added to user successfully", result);
+};
+
+const removeRole = async (
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+) => {
+  let user = await DB.findById(req.body.userId);
+  let role = await roleDb.findById(req.body.roleId);
+
+  let checkRole = await user.roles.filter((r: any) => r.toString() === role._id.toString());
+
+  if (!user) {
+    return next(new Error("User not found"));
+  }
+
+  if (!role) {
+    return next(new Error("Role not found"));
+  }
+
+  if (checkRole.length === 0) {
+    return next(new Error("User does not have this role"));
+  }
+
+  await DB.findByIdAndUpdate(user._id, { $pull: { roles: role._id } });
+  let result = await DB.findById(user._id)
+    .populate("roles permits", "-__v")
+    .select("-__v -password");
+  fMs(res, "Role removed from user successfully", result);
 };
 
 const addPermit = async (
@@ -117,6 +143,40 @@ const addPermit = async (
   fMs(res, "Permit added to user successfully", result);
 };
 
+const removePermit = async (
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+) => {
+  let user = await DB.findById(req.body.userId);
+  let permit = await permitDb.findById(req.body.permitId);
+
+  // console.log(req.body);
+
+  let checkPermit = await user.permits.filter((p: any) => p.toString() === permit._id.toString());
+
+  if (!user) {
+    return next(new Error("User not found"));
+  }
+
+  if (!permit) {
+    return next(new Error("Permit not found"));
+  }
+  
+  if (checkPermit.length === 0) {
+    return next(new Error("User does not have this permit"));
+  }
+
+  await DB.findByIdAndUpdate(user._id, { $pull: { permits: permit._id } });
+
+  let result = await DB.findById(user._id)
+    .populate("roles permits", "-__v")
+    .select("-__v -password");
+
+  fMs(res, "Permit removed from user successfully", result);
+};
+
+
 const allUser = async (
   req: e.Request,
   res: e.Response,
@@ -128,4 +188,4 @@ const allUser = async (
   fMs(res, "All users", users);
 };
 
-module.exports = { register, login, allUser, addRole, addPermit };
+module.exports = { register, login, allUser, addRole, removeRole, addPermit, removePermit };
