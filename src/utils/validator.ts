@@ -1,4 +1,4 @@
-const { verifyToken,getCache } = require("../utils/helper");
+const { verifyToken, getCache } = require("../utils/helper");
 
 const validateBody = (schema: any) => {
   return (req: any, res: any, next: any) => {
@@ -32,7 +32,7 @@ const validateToken = async (req: any, res: any, next: any) => {
 
   // console.log(authHeader);
   const decoded = verifyToken(authHeader);
-//   console.log(decoded._id);
+  //   console.log(decoded._id);
 
   if (!decoded) {
     return next(new Error("Invalid token"));
@@ -40,7 +40,7 @@ const validateToken = async (req: any, res: any, next: any) => {
 
   let user = await getCache(decoded._id);
 
-//   console.log(user);
+  //   console.log(user);
 
   if (!user) {
     return next(new Error("User not found"));
@@ -49,7 +49,19 @@ const validateToken = async (req: any, res: any, next: any) => {
   if (req.body) {
     req.body.user = user;
   }
+
   next();
 };
 
-module.exports = { validateBody, validateParams, validateToken };
+const validateRole = (role: string) => {
+  return (req: any, res: any, next: any) => {
+    if (req.body.user.name.toLowerCase() === role) {
+      console.log("Role validated successfully");
+      next();
+    } else {
+      return next(new Error("Unauthorized access Role not found"));
+    }
+  };
+};
+
+module.exports = { validateBody, validateParams, validateToken, validateRole };

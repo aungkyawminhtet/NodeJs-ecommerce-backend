@@ -59,8 +59,13 @@ const addRole = async (
   res: e.Response,
   next: e.NextFunction,
 ) => {
+  console.log("req.body", req.body);
   let user = await DB.findById(req.body.userId);
   let role = await roleDb.findById(req.body.roleId);
+
+  let checkRole = await user.roles.filter((r: any) => r.toString() === role._id.toString());
+
+  console.log("checkRole", checkRole);
 
   if (!user) {
     return next(new Error("User not found"));
@@ -68,6 +73,10 @@ const addRole = async (
 
   if (!role) {
     return next(new Error("Role not found"));
+  }
+
+  if (checkRole.length > 0) {
+    return next(new Error("Role already has this role"));
   }
 
   await DB.findByIdAndUpdate(user._id, { $push: { roles: role._id } });
@@ -85,6 +94,8 @@ const addPermit = async (
   let user = await DB.findById(req.body.userId);
   let permit = await permitDb.findById(req.body.permitId);
 
+  let checkPermit = await user.permits.filter((p: any) => p.toString() === permit._id.toString());
+
   if (!user) {
     return next(new Error("User not found"));
   }
@@ -93,12 +104,16 @@ const addPermit = async (
     return next(new Error("Permit not found"));
   }
 
+  if (checkPermit.length > 0) {
+    return next(new Error("User Permit already has this permit"));
+  }
+
   await DB.findByIdAndUpdate(user._id, { $push: { permits: permit._id } });
 
   let result = await DB.findById(user._id)
     .populate("roles permits", "-__v")
     .select("-__v -password");
-    
+
   fMs(res, "Permit added to user successfully", result);
 };
 

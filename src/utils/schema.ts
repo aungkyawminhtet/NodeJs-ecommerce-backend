@@ -46,6 +46,7 @@ const userSchema = {
       .string()
       .regex(/^[0-9a-fA-F]{24}$/)
       .required(),
+    user: joi.optional(),
   }),
 
   addPermitSchema: joi.object({
@@ -57,6 +58,7 @@ const userSchema = {
       .string()
       .regex(/^[0-9a-fA-F]{24}$/)
       .required(),
+    user: joi.optional(),
   }),
 };
 
