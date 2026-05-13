@@ -86,6 +86,7 @@ const validatePermit = (permit: string) => {
     } else {
       return next(new Error("Unauthorized access Permit!"));
     }
+  }
 }
 
 const hasAnyPermit = (permits: string[]) => {

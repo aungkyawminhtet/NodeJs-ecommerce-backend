@@ -62,6 +62,18 @@ const userSchema = {
   }),
 };
 
+const categorySchema = {
+  bodySchema: joi.object({
+    name: joi.string().required(),
+    image: joi.string().optional(),
+    subCategory: joi
+      .array()
+      .items(joi.string().regex(/^[0-9a-fA-F]{24}$/))
+      .optional(),
+    user: joi.optional(),
+  })
+}
+
 const loginSchema = {
   bodySchema: joi.object({
     email: joi.string().email().required(),
@@ -79,4 +91,5 @@ module.exports = {
   userSchema,
   loginSchema,
   idSchema,
+  categorySchema,
 };
