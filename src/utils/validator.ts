@@ -62,7 +62,7 @@ const validateRole = (role: string) => {
 };
 
 const hasAnyRole = (roles: string[]) => {
-  console.log("hasAnyRole", roles);
+  // console.log("hasAnyRole", roles);
   return (req: any, res: any, next: any) => {
     let hasRole = false;
     for (let i = 0; i < roles.length; i++) {

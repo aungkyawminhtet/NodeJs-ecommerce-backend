@@ -16,7 +16,14 @@ const addCategory = async(req: e.Request, res: e.Response, next: e.NextFunction)
 }
 
 const allCategory = async(req: e.Request, res: e.Response, next: e.NextFunction) => {
-    let category = await catDB.find();
+    let category = await catDB.find().populate({
+        path : "subCategory",
+        select : "-__v -createdAt -updatedAt",
+        populate : {
+            path : "childCategories",
+            select : "-__v -createdAt -updatedAt"
+        }
+    });
     
     fMs(res, "All category", category);
 }

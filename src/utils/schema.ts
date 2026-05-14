@@ -74,6 +74,28 @@ const categorySchema = {
   })
 }
 
+const subCategorySchema = {
+  bodySchema: joi.object({
+    name: joi.string().required(),
+    image: joi.string().required(),
+    categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    childCategories: joi
+      .array()
+      .items(joi.string().regex(/^[0-9a-fA-F]{24}$/))
+      .optional(),
+    user: joi.optional(),
+  }),
+};
+
+const childCategorySchema = {
+  bodySchema: joi.object({
+    name: joi.string().required(),
+    image: joi.string().required(),
+    subCategoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    user: joi.optional(),
+  }),
+};
+
 const loginSchema = {
   bodySchema: joi.object({
     email: joi.string().email().required(),
@@ -92,4 +114,6 @@ module.exports = {
   loginSchema,
   idSchema,
   categorySchema,
+  subCategorySchema,
+  childCategorySchema
 };

@@ -18,6 +18,8 @@ const user = require("./routes/userRoutes");
 const permit = require("./routes/permitRoute");
 const role = require("./routes/roleRoute");
 const category = require("./routes/categoryRoute");
+const subCategory = require("./routes/subCatRoute");
+const childCategory = require("./routes/childCatRouter");
 
 const app = Express();
 
@@ -32,7 +34,8 @@ app.use("/api/v1/users", user);
 app.use("/api/v1/permits", permit);
 app.use("/api/v1/roles", role);
 app.use("/api/v1/categories", category);
-
+app.use("/api/v1/subcategories", subCategory);
+app.use("/api/v1/childcategories", childCategory);
 //err handler
 app.use((err: any, req: e.Request, res: e.Response, next: e.NextFunction) => {
   const status = err.status || 500;

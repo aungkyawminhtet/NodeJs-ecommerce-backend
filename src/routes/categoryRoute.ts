@@ -26,7 +26,7 @@ router.post(
 router
   .route("/:id")
   .get([validateParams(idSchema, "id")], category.getCategoryById)
-  .put(
+  .patch(
     [
       validateToken,
       validateRole("admin"),

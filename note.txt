@@ -6,3 +6,18 @@ npm i async-redis
 //redis cmd
 redis-cli
 redis-commander
+
+
+//nested populate
+const allCategory = async(req: e.Request, res: e.Response, next: e.NextFunction) => {
+    let category = await catDB.find().populate({
+        path : "subCategory",
+        select : "-__v -createdAt -updatedAt",
+        populate : {
+            path : "childCategories",
+            select : "-__v -createdAt -updatedAt"
+        }
+    });
+    
+    fMs(res, "All category", category);
+}
