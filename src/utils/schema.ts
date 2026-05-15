@@ -87,6 +87,17 @@ const subCategorySchema = {
   }),
 };
 
+const deliverySchema = {
+  bodySchema: joi.object({
+    name: joi.string().required(),
+    price: joi.number().required(),
+    duration: joi.string().required(),
+    image: joi.string().required(),
+    remarks: joi.string().required(),
+    user: joi.optional(),
+  }),
+};
+
 const childCategorySchema = {
   bodySchema: joi.object({
     name: joi.string().required(),
@@ -95,6 +106,14 @@ const childCategorySchema = {
     user: joi.optional(),
   }),
 };
+
+const tagSchema = {
+  bodySchema: joi.object({
+    name: joi.string().required(),
+    image: joi.string().optional(),
+    user: joi.optional(),
+  }), 
+}
 
 const loginSchema = {
   bodySchema: joi.object({
@@ -115,5 +134,7 @@ module.exports = {
   idSchema,
   categorySchema,
   subCategorySchema,
-  childCategorySchema
+  childCategorySchema,
+  tagSchema,
+  deliverySchema,
 };

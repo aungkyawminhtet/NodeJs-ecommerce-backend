@@ -20,6 +20,7 @@ const validateParams = (schema: any, name: string) => {
     let result = schema.validate(obj);
 
     if (result.error) {
+      console.log("Validation error:", result.error.details[0].message);
       return next(new Error(result.error.details[0].message));
     } else {
       next();
@@ -56,7 +57,7 @@ const validateRole = (role: string) => {
       // console.log("Role validated successfully");
       next();
     } else {
-      return next(new Error("Unauthorized access!"));
+      return next(new Error("Unauthorized access from Role!"));
     }
   };
 };
@@ -72,7 +73,7 @@ const hasAnyRole = (roles: string[]) => {
       }
     }
     if (!hasRole) {
-      return next(new Error("Unauthorized access!"));
+      return next(new Error("Unauthorized access from any Role!"));
     }
     next();
   };

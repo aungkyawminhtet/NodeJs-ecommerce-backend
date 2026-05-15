@@ -22,9 +22,10 @@ const saveFile = async (
     // console.log(req);
 
     if (!req.files || !req.files.photo) {
-      return res
-        .status(400)
-        .json({ message: "No file uploaded in this files" });
+      console.log("No file uploaded in this files");
+      // return res
+      //   .status(400)
+      //   .json({ message: "No file uploaded in this files" });
     }
 
     const photo = req.files?.photo as UploadedFile;

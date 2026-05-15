@@ -20,6 +20,8 @@ const role = require("./routes/roleRoute");
 const category = require("./routes/categoryRoute");
 const subCategory = require("./routes/subCatRoute");
 const childCategory = require("./routes/childCatRouter");
+const tag = require("./routes/tagRoute");
+const delivery = require("./routes/deliveryRoute");
 
 const app = Express();
 
@@ -31,8 +33,10 @@ app.use("/uploads", Express.static(path.join(__dirname, "../uploads")));
 DbConnect();
 
 app.use("/api/v1/users", user);
+app.use("/api/v1/tags", tag);
 app.use("/api/v1/permits", permit);
 app.use("/api/v1/roles", role);
+app.use("/api/v1/deliveries", delivery);
 app.use("/api/v1/categories", category);
 app.use("/api/v1/subcategories", subCategory);
 app.use("/api/v1/childcategories", childCategory);
