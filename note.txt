@@ -2,11 +2,16 @@
 //node package
 npm install -D @types/node @types/express
 npm i async-redis
+npm i socket.io
 
 //redis cmd
 redis-cli
 redis-commander
+redis-cli -> flushall  = this is delete all data from redis
 
+//socket io usage
+on
+emit
 
 //nested populate
 const allCategory = async(req: e.Request, res: e.Response, next: e.NextFunction) => {
@@ -21,3 +26,8 @@ const allCategory = async(req: e.Request, res: e.Response, next: e.NextFunction)
     
     fMs(res, "All category", category);
 }
+
+//jwt notice
+jwt.verify(token, secrectKey);
+jwt verify is working in expire time
+jwt decoded is not working in expire time

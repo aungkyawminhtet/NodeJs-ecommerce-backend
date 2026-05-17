@@ -115,6 +115,64 @@ const tagSchema = {
   }), 
 }
 
+const warrantySchema = {
+  bodySchema: joi.object({
+    name: joi.string().required(),
+    image: joi.string(),
+    remarks: joi.string().optional(),
+    user: joi.optional(),
+  }),
+};
+
+const productSchema = {
+  bodySchema: joi.object({
+    name: joi.string().required(),
+    price: joi.number().required(),
+    brand: joi.string().required(),
+    category: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    subCategory: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    childCategory: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    tag: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    discount: joi.number().required(),
+    features: joi.string().required(),
+    description: joi.string().required(),
+    details: joi.string().required(),
+    status: joi.string().valid("available", "unavailable").required(),
+    delivery: joi.string().required(),
+    warranty: joi.string().required(),
+    images: joi.string().required(),
+    colors: joi.string().required(),
+    sizes: joi.string().required(),
+    rating: joi.number().min(0).max(5).required(),
+    user: joi.optional(),
+  })
+}
+
+const orderSchema = {
+  bodySchema: joi.object({
+    items: joi
+      .array()
+      .items(
+        joi.object({
+          productId: joi
+            .string()
+            .regex(/^[0-9a-fA-F]{24}$/)
+            .required(),
+          count: joi
+            .number()
+            .integer()
+            .min(1)
+            .required(),
+        })
+      ),
+    status: joi
+      .string()
+      .valid("PENDING", "SHIPPED", "DELIVERED", "CANCELLED")
+      .required(),
+    user: joi.optional(),
+  }),
+}
+
 const loginSchema = {
   bodySchema: joi.object({
     email: joi.string().email().required(),
@@ -132,9 +190,12 @@ module.exports = {
   userSchema,
   loginSchema,
   idSchema,
+  orderSchema,
   categorySchema,
   subCategorySchema,
   childCategorySchema,
   tagSchema,
   deliverySchema,
+  warrantySchema,
+  productSchema,
 };

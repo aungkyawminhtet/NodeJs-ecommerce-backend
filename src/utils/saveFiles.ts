@@ -8,6 +8,7 @@ import type { UploadedFile } from "express-fileupload";
 export interface CustomRequest extends Request {
   imageName?: string;
   image?: string;
+  images?: string;
   message?: string;
   files?: any;
   body: any;
@@ -22,10 +23,10 @@ const saveFile = async (
     // console.log(req);
 
     if (!req.files || !req.files.photo) {
-      console.log("No file uploaded in this files");
-      // return res
-      //   .status(400)
-      //   .json({ message: "No file uploaded in this files" });
+      // console.log("No file uploaded in this files");
+      return res
+        .status(400)
+        .json({ message: "No file uploaded in this files" });
     }
 
     const photo = req.files?.photo as UploadedFile;
@@ -43,6 +44,7 @@ const saveFile = async (
     await photo.mv(uploadPath);
 
     req.body["image"] = uniqueName;
+    console.log("image Saved");
     // console.log("from iamge ", req.body);
     next();
     // console.log("success image");
@@ -83,7 +85,10 @@ const saveMultiFiles = async (
       await file.mv(uploadPath);
     });
 
-    req.image = filesName.join(",");
+    req.body.images = filesName.join(",");
+
+    console.log("images Saved", req.body);
+
     next();
 
     // return res.status(200).json({

@@ -22,8 +22,13 @@ const subCategory = require("./routes/subCatRoute");
 const childCategory = require("./routes/childCatRouter");
 const tag = require("./routes/tagRoute");
 const delivery = require("./routes/deliveryRoute");
+const warranty = require("./routes/warrantyRoute");
+const product = require("./routes/productRoute");
+const order = require("./routes/orderRoute");
 
 const app = Express();
+const server = require("http").createServer(app);
+const io = require('socket.io')(server);
 
 app.use(Express.json());
 app.use(core());
@@ -36,16 +41,33 @@ app.use("/api/v1/users", user);
 app.use("/api/v1/tags", tag);
 app.use("/api/v1/permits", permit);
 app.use("/api/v1/roles", role);
+app.use("/api/v1/orders", order);
 app.use("/api/v1/deliveries", delivery);
 app.use("/api/v1/categories", category);
+app.use("/api/v1/warranties", warranty);
 app.use("/api/v1/subcategories", subCategory);
 app.use("/api/v1/childcategories", childCategory);
+app.use("/api/v1/products", product);
+
 //err handler
 app.use((err: any, req: e.Request, res: e.Response, next: e.NextFunction) => {
   const status = err.status || 500;
   res.status(status).json({
     con: false,
     msg: err.message,
+  });
+});
+
+io.on('connection', (socket: any) => {
+  console.log('A user connected');
+
+  socket.on('test', (data: any) => {
+    console.log('Test data received:',data);
+
+    if(data === "send"){
+      io.emit('success', 'Hello from the server!');
+      console.log('Response sent to client');
+    }
   });
 });
 
@@ -60,6 +82,6 @@ const defaultData = async () => {
 
 defaultData();
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });

@@ -39,7 +39,7 @@ const token = (payload : string) => {
 const verifyToken = (token: string) => {
     const secrectKey = process.env.SECRET_KEY;
     try {
-        return jwt.decode(token, secrectKey);
+        return jwt.verify(token, secrectKey);
     } catch (err) {
         return null;
     }
