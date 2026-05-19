@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const messageSchema = new Schema({
   sender: { type: Schema.Types.ObjectId, ref: "user", required: true },
   receiver: { type: Schema.Types.ObjectId, ref: "user", required: true },
-  title: {
+  type: {
     type: String,
     enum: ["Text", "Image"],
     default: "Text",

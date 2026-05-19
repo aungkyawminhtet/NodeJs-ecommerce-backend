@@ -10,8 +10,18 @@ redis-commander
 redis-cli -> flushall  = this is delete all data from redis
 
 //socket io usage
-on
-emit
+io.on('connection', (socket: any) => {
+  console.log('A user connected');
+
+  socket.on('test', (data: any) => {
+    console.log('Test data received:',data);
+
+    if(data === "send"){
+      io.emit('success', 'Hello from the server!');
+      console.log('Response sent to client');
+    }
+  });
+});
 
 //nested populate
 const allCategory = async(req: e.Request, res: e.Response, next: e.NextFunction) => {
