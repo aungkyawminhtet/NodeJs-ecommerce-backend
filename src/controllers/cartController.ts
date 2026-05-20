@@ -5,6 +5,7 @@ const orderItemDB = require("../models/orderItem");
 const { fMs, setCache } = require("../utils/helper");
 import type e = require("express");
 
+
 const recalcCart = (cart: any) => {
   let totalItems = 0;
   let totalPrice = 0;
@@ -214,8 +215,11 @@ const removeCartItem = async (
 
     const item = cart.items.filter((i: any) => i._id.toString() === itemId.toString())[0];
 
+    console.log("remove item ", item);
+    
     if (!item) return next(new Error("Cart item not found"));
 
+    cart.items.pull(itemId);
     recalcCart(cart);
     await cart.save();
     await setCache(`cart:${userId.toString()}`, cart);
