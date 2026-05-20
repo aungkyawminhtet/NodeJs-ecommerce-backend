@@ -48,7 +48,7 @@ const decode = (data: string, hash: string) => {
 
 const token = (payload: string) => {
   const secrectKey = process.env.SECRET_KEY;
-  return jwt.sign(payload, secrectKey, { expiresIn: "1h" });
+  return jwt.sign(payload, secrectKey, { expiresIn: "24h" });
 };
 
 const verifyToken = (token: string) => {

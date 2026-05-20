@@ -71,14 +71,17 @@ const categorySchema = {
       .items(joi.string().regex(/^[0-9a-fA-F]{24}$/))
       .optional(),
     user: joi.optional(),
-  })
-}
+  }),
+};
 
 const subCategorySchema = {
   bodySchema: joi.object({
     name: joi.string().required(),
     image: joi.string().required(),
-    categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    categoryId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
     childCategories: joi
       .array()
       .items(joi.string().regex(/^[0-9a-fA-F]{24}$/))
@@ -102,7 +105,10 @@ const childCategorySchema = {
   bodySchema: joi.object({
     name: joi.string().required(),
     image: joi.string().required(),
-    subCategoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    subCategoryId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
     user: joi.optional(),
   }),
 };
@@ -112,8 +118,8 @@ const tagSchema = {
     name: joi.string().required(),
     image: joi.string().optional(),
     user: joi.optional(),
-  }), 
-}
+  }),
+};
 
 const warrantySchema = {
   bodySchema: joi.object({
@@ -129,10 +135,22 @@ const productSchema = {
     name: joi.string().required(),
     price: joi.number().required(),
     brand: joi.string().required(),
-    category: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
-    subCategory: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
-    childCategory: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
-    tag: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+    category: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+    subCategory: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+    childCategory: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+    tag: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
     discount: joi.number().required(),
     features: joi.string().required(),
     description: joi.string().required(),
@@ -145,11 +163,30 @@ const productSchema = {
     sizes: joi.string().required(),
     rating: joi.number().min(0).max(5).required(),
     user: joi.optional(),
-  })
-}
+  }),
+};
 
 const orderSchema = {
   bodySchema: joi.object({
+    items: joi.array().items(
+      joi.object({
+        productId: joi
+          .string()
+          .regex(/^[0-9a-fA-F]{24}$/)
+          .required(),
+        count: joi.number().integer().min(1).required(),
+      }),
+    ),
+    status: joi
+      .string()
+      .valid("PENDING", "SHIPPED", "DELIVERED", "CANCELLED")
+      .required(),
+    user: joi.optional(),
+  }),
+};
+
+const cartSchema = {
+  addSchema: joi.object({
     items: joi
       .array()
       .items(
@@ -158,20 +195,19 @@ const orderSchema = {
             .string()
             .regex(/^[0-9a-fA-F]{24}$/)
             .required(),
-          count: joi
-            .number()
-            .integer()
-            .min(1)
-            .required(),
-        })
-      ),
-    status: joi
-      .string()
-      .valid("PENDING", "SHIPPED", "DELIVERED", "CANCELLED")
+          quantity: joi.number().integer().min(1).optional(),
+        }),
+      )
+      .min(1)
       .required(),
     user: joi.optional(),
   }),
-}
+  updateItemSchema: joi.object({
+    quantity: joi.number().integer().min(0).optional(),
+    selected: joi.boolean().optional(),
+    user: joi.optional(),
+  }),
+};
 
 const loginSchema = {
   bodySchema: joi.object({
@@ -191,6 +227,7 @@ module.exports = {
   loginSchema,
   idSchema,
   orderSchema,
+  cartSchema,
   categorySchema,
   subCategorySchema,
   childCategorySchema,

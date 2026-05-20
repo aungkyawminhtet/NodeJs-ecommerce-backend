@@ -5,7 +5,7 @@ import path = require("path");
 import core = require("cors");
 
 const userDB = require("./models/user");
-const {initialize} = require("./utils/chat");
+const { initialize } = require("./utils/chat");
 const { fMs, verifyToken } = require("./utils/helper");
 
 const {
@@ -29,6 +29,7 @@ const delivery = require("./routes/deliveryRoute");
 const warranty = require("./routes/warrantyRoute");
 const product = require("./routes/productRoute");
 const order = require("./routes/orderRoute");
+const cart = require("./routes/cartRoute");
 
 const app = Express();
 const server = require("http").createServer(app);
@@ -52,6 +53,7 @@ app.use("/api/v1/warranties", warranty);
 app.use("/api/v1/subcategories", subCategory);
 app.use("/api/v1/childcategories", childCategory);
 app.use("/api/v1/products", product);
+app.use("/api/v1/cart", cart);
 
 //err handler
 app.use((err: any, req: e.Request, res: e.Response, next: e.NextFunction) => {
@@ -82,7 +84,7 @@ io.of("/chat")
 
   .on("connection", (socket: any) => {
     console.log("A user connected");
-    initialize(io, socket); 
+    initialize(io, socket);
   });
 
 // io.on('connection', (socket: any) => {
