@@ -6,7 +6,9 @@ const {
   token,
   getCache,
   setCache,
+  generateTokens,
 } = require("../utils/helper");
+const crypto = require("crypto");
 const DB = require("../models/user");
 const roleDb = require("../models/role");
 const permitDb = require("../models/permit");
@@ -16,42 +18,82 @@ const register = async (
   res: e.Response,
   next: e.NextFunction,
 ) => {
-  let encodedPassword = encode(req.body.password);
-  req.body.password = encodedPassword;
+  try {
+    let encodedPassword = encode(req.body.password);
+    req.body.password = encodedPassword;
 
-  const user = await DB.findOne({ email: req.body.email });
+    const user = await DB.findOne({ email: req.body.email });
 
-  if (user) {
-    return next(new Error("User already exists"));
+    if (user) {
+      return next(new Error("User already exists"));
+    }
+
+    // Generate email verification token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    req.body.emailVerificationToken = verificationToken;
+
+    const createUser = await new DB(req.body).save();
+
+    // Asynchronously send verification email (doesn't block response)
+    const { sendEmail } = require("./authController");
+    const verificationLink = `${process.env.FRONTEND_URL || "http://localhost:3000"}/verify-email?token=${verificationToken}`;
+    const emailHtml = `
+      <h1>Welcome to our E-Commerce Platform!</h1>
+      <p>Thank you for signing up. Please verify your email by clicking the button below:</p>
+      <a href="${verificationLink}" style="display:inline-block;padding:10px 20px;background:#28A745;color:#fff;text-decoration:none;border-radius:5px;">Verify Email</a>
+      <p>If the button doesn't work, copy-paste this link into your browser: <br/> ${verificationLink}</p>
+    `;
+
+    sendEmail(createUser.email, "Verify Your Email Address", emailHtml)
+      .catch((err: any) => console.error("Async verification email sending failed:", err));
+
+    fMs(res, "User created successfully. Please check your email to verify your account.", createUser);
+  } catch (err) {
+    next(err);
   }
-
-  const createUser = await new DB(req.body).save();
-  fMs(res, "User created successfully", createUser);
 };
 
-const login = async (req: e.Request, res: e.Response, next: e.NextFunction) => {
-  const user = await DB.findOne({ email: req.body.email })
-    .populate("roles permits", "-__v")
-    .select("-__v ");
-  if (!user) {
-    return next(new Error("User not found"));
+const login = async (req: any, res: e.Response, next: e.NextFunction) => {
+  try {
+    const user = await DB.findOne({ email: req.body.email })
+      .populate("roles permits", "-__v")
+      .select("-__v ");
+    if (!user) {
+      return next(new Error("User not found"));
+    }
+    const isPasswordValid = decode(req.body.password, user.password);
+
+    if (!isPasswordValid) {
+      return next(new Error("Invalid password"));
+    }
+
+    // Generate new Access and Refresh tokens
+    const tokens = generateTokens(user.toObject());
+
+    const result = {
+      ...user.toObject(),
+      token: tokens.accessToken,
+    };
+    delete result.password;
+
+    // Cache access token user state in Redis
+    await setCache(user._id.toString(), result);
+
+    // Save refresh token in Redis (valid for 7 days)
+    await setCache(`refreshToken:${user._id.toString()}`, tokens.refreshToken);
+
+    // Set HTTP-Only Cookie for Refresh Token
+    res.cookie("refreshToken", tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: "strict",
+    });
+
+    fMs(res, "User logged in successfully", result);
+  } catch (err) {
+    next(err);
   }
-  const isPasswordValid = decode(req.body.password, user.password);
-
-  if (!isPasswordValid) {
-    return next(new Error("Invalid password"));
-  }
-  const userToken = token(user.toObject());
-
-  const result = {
-    ...user.toObject(),
-    token: userToken,
-  };
-  delete result.password;
-
-  await setCache(user._id, result);
-
-  fMs(res, "User logged in successfully", result);
 };
 
 const addRole = async (

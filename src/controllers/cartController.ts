@@ -140,6 +140,16 @@ const checkoutSelectedItems = async (
     saveOrder.items = orderIds;
     saveOrder.count = selectedItems.length;
     saveOrder.totalPrice = totalPrice;
+    saveOrder.orderNumber = `ORD-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    if (req.body.shippingAddress) {
+      saveOrder.shippingAddress = req.body.shippingAddress;
+    }
+    if (req.body.paymentMethod) {
+      saveOrder.paymentMethod = req.body.paymentMethod;
+    }
+    if (req.body.notes) {
+      saveOrder.notes = req.body.notes;
+    }
     saveOrder.status = "PENDING";
 
     const order = await saveOrder.save();
@@ -215,7 +225,7 @@ const removeCartItem = async (
 
     const item = cart.items.filter((i: any) => i._id.toString() === itemId.toString())[0];
 
-    console.log("remove item ", item);
+    // console.log("remove item ", item);
     
     if (!item) return next(new Error("Cart item not found"));
 

@@ -3,6 +3,7 @@
 npm install -D @types/node @types/express
 npm i async-redis
 npm i socket.io
+npm i helmet
 
 //redis cmd
 redis-cli

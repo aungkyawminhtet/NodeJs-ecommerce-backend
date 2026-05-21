@@ -5,7 +5,7 @@ const {
   createOrder,
   updateOrder,
   deleteOrder,
-} = require("../controllers/orederController");
+} = require("../controllers/orderController");
 const {
   validateBody,
   validateParams,

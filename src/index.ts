@@ -3,11 +3,14 @@ import Express = require("express");
 import type e = require("express");
 import path = require("path");
 import core = require("cors");
+const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 
 const userDB = require("./models/user");
 const { initialize } = require("./utils/chat");
 const { fMs, verifyToken } = require("./utils/helper");
 
+//default migration
 const {
   defaultMigration,
   addPermitRole,
@@ -30,13 +33,26 @@ const warranty = require("./routes/warrantyRoute");
 const product = require("./routes/productRoute");
 const order = require("./routes/orderRoute");
 const cart = require("./routes/cartRoute");
+const payment = require("./routes/paymentRoute");
+const auth = require("./routes/authRoute");
+const address = require("./routes/addressRoute");
 
 const app = Express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 
-app.use(Express.json());
+app.use(
+  Express.json({
+    verify: (req: any, res: any, buf: Buffer) => {
+      if (req.originalUrl.startsWith("/api/v1/payments/webhook")) {
+        req.rawBody = buf;
+      }
+    },
+  })
+);
 app.use(core());
+app.use(helmet());
+app.use(cookieParser());
 app.use(uploadFile());
 app.use("/uploads", Express.static(path.join(__dirname, "../uploads")));
 
@@ -54,6 +70,9 @@ app.use("/api/v1/subcategories", subCategory);
 app.use("/api/v1/childcategories", childCategory);
 app.use("/api/v1/products", product);
 app.use("/api/v1/cart", cart);
+app.use("/api/v1/payments", payment);
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/addresses", address);
 
 //err handler
 app.use((err: any, req: e.Request, res: e.Response, next: e.NextFunction) => {

@@ -168,6 +168,16 @@ const productSchema = {
 
 const orderSchema = {
   bodySchema: joi.object({
+    shippingAddress: joi.object({
+      fullName: joi.string().required(),
+      phone: joi.string().required(),
+      addressLine1: joi.string().required(),
+      addressLine2: joi.string().optional().allow(""),
+      city: joi.string().required(),
+      state: joi.string().required(),
+      zipCode: joi.string().required(),
+      country: joi.string().optional(),
+    }),
     items: joi.array().items(
       joi.object({
         productId: joi
@@ -215,10 +225,59 @@ const loginSchema = {
     password: joi.string().min(3).required(),
   }),
 };
-
 const idSchema = joi.object({
   id: joi.string().regex(/^[0-9a-fA-F]{24}$/),
 });
+
+const paymentSchema = {
+  checkoutSessionSchema: joi.object({
+    orderId: joi
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/)
+      .required(),
+    user: joi.optional(),
+  }),
+};
+
+const addressSchema = {
+  bodySchema: joi.object({
+    fullName: joi.string().required(),
+    phone: joi.string().required(),
+    addressLine1: joi.string().required(),
+    addressLine2: joi.string().optional().allow(""),
+    city: joi.string().required(),
+    state: joi.string().required(),
+    zipCode: joi.string().required(),
+    country: joi.string().optional(),
+    isDefault: joi.boolean().optional(),
+    user: joi.optional(),
+  }),
+  updateSchema: joi.object({
+    fullName: joi.string().optional(),
+    phone: joi.string().optional(),
+    addressLine1: joi.string().optional(),
+    addressLine2: joi.string().optional().allow(""),
+    city: joi.string().optional(),
+    state: joi.string().optional(),
+    zipCode: joi.string().optional(),
+    country: joi.string().optional(),
+    isDefault: joi.boolean().optional(),
+    user: joi.optional(),
+  }),
+};
+
+const authSchema = {
+  forgotPassword: joi.object({
+    email: joi.string().email().required(),
+  }),
+  resetPassword: joi.object({
+    token: joi.string().required(),
+    newPassword: joi.string().min(6).required(),
+  }),
+  verifyEmail: joi.object({
+    token: joi.string().required(),
+  }),
+};
 
 module.exports = {
   permitSchema,
@@ -228,6 +287,9 @@ module.exports = {
   idSchema,
   orderSchema,
   cartSchema,
+  paymentSchema,
+  addressSchema,
+  authSchema,
   categorySchema,
   subCategorySchema,
   childCategorySchema,

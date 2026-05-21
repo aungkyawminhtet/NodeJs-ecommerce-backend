@@ -8,6 +8,12 @@ const userSchema = new Schema({
     password : {type : String, required: true},
     roles: [{type: Schema.Types.ObjectId, ref: "role"}],
     permits: [{type: Schema.Types.ObjectId, ref: "permit"}],
+    avatar : {type : String, required: false},
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
+    wishlist: [{ type: Schema.Types.ObjectId, ref: "product" }],
     createdAt : {type : Date, default: Date.now}
 })
 

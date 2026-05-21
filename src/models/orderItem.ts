@@ -11,8 +11,8 @@ const orderItemSchema = new Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   count: { type: Number, required: true, default: 1 },
-  createdAt: { type: Date, default: Date.now() },
-  updatedAt: { type: Date, default: Date.now() },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 const OrderItem = mongoose.model("orderItem", orderItemSchema);

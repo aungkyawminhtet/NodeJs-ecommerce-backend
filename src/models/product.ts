@@ -27,8 +27,8 @@ const productSchema = new Schema({
   colors: { type: Array, required: true },
   sizes: { type: String, required: true },
   rating: { type: Number, default: 0, required: true },
-  createdAt: { type: Date, default: Date.now() },
-  updatedAt: { type: Date, default: Date.now() },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 const Product = mongoose.model("product", productSchema);

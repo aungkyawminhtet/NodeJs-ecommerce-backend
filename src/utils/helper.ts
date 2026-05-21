@@ -60,6 +60,23 @@ const verifyToken = (token: string) => {
   }
 };
 
+const generateTokens = (payload: any) => {
+  const secretKey = process.env.SECRET_KEY;
+  const refreshKey = process.env.REFRESH_SECRET_KEY || "akmh2025";
+  const accessToken = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+  const refreshToken = jwt.sign({ _id: payload._id }, refreshKey, { expiresIn: "7d" });
+  return { accessToken, refreshToken };
+};
+
+const verifyRefreshToken = (token: string) => {
+  const refreshKey = process.env.REFRESH_SECRET_KEY || "refresh_secret_key";
+  try {
+    return jwt.verify(token, refreshKey);
+  } catch (err) {
+    return null;
+  }
+};
+
 module.exports = {
   fMs,
   encode,
@@ -69,6 +86,8 @@ module.exports = {
   setCache,
   deleteCache,
   verifyToken,
+  verifyRefreshToken,
+  generateTokens,
   isUserOnline,
   getUserSocketId,
 };
