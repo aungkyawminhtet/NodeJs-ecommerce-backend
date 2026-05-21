@@ -1,2 +1,35 @@
+# Current
 .env
-./node-modules
+/node_modules
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build/Dist
+/dist
+/build
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Package managers
+package-lock.json
+yarn.lock
+
+# Environment
+.env.local
+.env.*.local
+
+# OS specific
+.DS_Store
+.env.example is OK (should NOT be ignored)
