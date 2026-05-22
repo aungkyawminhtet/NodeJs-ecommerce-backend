@@ -36,6 +36,8 @@ const cart = require("./routes/cartRoute");
 const payment = require("./routes/paymentRoute");
 const auth = require("./routes/authRoute");
 const address = require("./routes/addressRoute");
+const swaggerUi = require("swagger-ui-express");
+const { swaggerSpec } = require("./docs/swaggerSpec");
 
 const app = Express();
 const server = require("http").createServer(app);
@@ -73,6 +75,9 @@ app.use("/api/v1/cart", cart);
 app.use("/api/v1/payments", payment);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/addresses", address);
+
+// Mount interactive Swagger API documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //err handler
 app.use((err: any, req: e.Request, res: e.Response, next: e.NextFunction) => {
@@ -120,12 +125,11 @@ io.of("/chat")
 // });
 
 const defaultData = async () => {
-  //   await defaultMigration();
+    // await defaultMigration();
   // await backupData();
   // await DefaultRolePermit();
   // await addPermitRole();
-  //   await addPermitRole();
-  console.log("Default data migrated successfully");
+    // await addPermitRole();
 };
 
 defaultData();

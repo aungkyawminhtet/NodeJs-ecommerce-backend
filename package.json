@@ -19,6 +19,7 @@
     "@types/express-fileupload": "^1.5.1",
     "@types/node": "^25.6.0",
     "@types/nodemailer": "^8.0.0",
+    "@types/swagger-ui-express": "^4.1.8",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3"
@@ -39,6 +40,7 @@
     "redis": "^5.12.1",
     "resend": "^6.12.3",
     "socket.io": "^4.8.3",
-    "stripe": "^22.1.1"
+    "stripe": "^22.1.1",
+    "swagger-ui-express": "^5.0.1"
   }
 }

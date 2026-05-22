@@ -19,6 +19,7 @@ const defaultMigration = () => {
     user.password = encodedPass;
     // new Db(user).save();
     await new Db(user).save();
+    console.log("User saved successfully");
   });
 };
 
@@ -35,13 +36,14 @@ const DefaultRolePermit = async () => {
   jsonData.permits.forEach(async (permitData: any) => {
     let permit = await new permitDb(permitData).save();
   });
+  console.log("Role and permit added successfully");
 };
 
 const addPermitRole = async () => {
   let data = fs.readFileSync("./src/migrations/rolePermit.json", "utf-8");
   let jsonData = JSON.parse(data);
 
-  console.log(jsonData.roles);
+  // console.log(jsonData.roles);
 
   for (let role of jsonData.roles) {
     let checkuser = await Db.findOne({ name: role.name });
@@ -52,6 +54,7 @@ const addPermitRole = async () => {
       await Db.findByIdAndUpdate(checkuser._id, { $push: { roles: checkRole._id } });
     }
   }
+  console.log("Role and permit added successfully");
 };
 
 const backupData = async () => {
