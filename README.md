@@ -1,3 +1,5 @@
+### 📌 [Live Demo](https://nodejs-ecommerce-backend-rbzh.onrender.com/api-docs/)
+
 # 🛍️ Advanced E-Commerce Backend API Engine
 
 An enterprise-grade, highly optimized e-commerce REST API backend designed with Express, TypeScript, and MongoDB. Powered by Redis session caching, Stripe checkout payments, and the Resend SDK transactional email dispatcher. Exposes a 100% complete interactive OpenAPI 3.0 Swagger sandbox playground.
