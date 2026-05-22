@@ -34,7 +34,7 @@ const register = async (
     const createUser = await new DB(req.body).save();
 
     const { sendEmail } = require("./authController");
-    const verificationLink = `${process.env.FRONTEND_URL || "http://localhost:3000/api/v1/auth"}/verify-email?token=${verificationToken}`;
+    const verificationLink = `${process.env.FRONTEND_URL || "http://localhost:3001/api/v1/auth"}/verify-email?token=${verificationToken}`;
     const emailHtml = `
       <h1>Welcome to our E-Commerce Platform!</h1>
       <p>Thank you for signing up. Please verify your email by clicking the button below:</p>

@@ -1,68 +1,68 @@
 const UserDB = require("../models/user");
 const crypto = require("crypto");
-// const { Resend } = require("resend");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+// const nodemailer = require("nodemailer");
 const { fMs, encode, generateTokens, verifyRefreshToken, setCache, getCache, deleteCache } = require("../utils/helper");
 import type e = require("express");
 
-// const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
+const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
 
 // Helper to send emails
-// const sendEmail = async (to: string, subject: string, html: string) => {
-//   console.log("This is Send Email function using Resend");
+const sendEmail = async (to: string, subject: string, html: string) => {
+  console.log("This is Send Email function using Resend");
   
-//   try {
-//     const { data, error } = await resend.emails.send({
-//       from: process.env.EMAIL_FROM || "onboarding@resend.dev",
-//       to: [to],
-//       subject: subject,
-//       html: html,
-//     });
-
-//     if (error) {
-//       console.error("Resend API error:", error);
-//       throw new Error(`Resend API error: ${error.message}`);
-//     }
-
-//     console.log("Email Send Successful:", data);
-//     return data;
-//   } catch (err) {
-//     console.error("Resend send email error:", err);
-//     throw new Error("Resend email transport failed");
-//   }
-// };
-
-const sendEmail = async (to: string, subject: string, html: string) => {  
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      // host: process.env.SMTP_HOST || "smtp.mailtrap.io",
-      host: 'smtp.gmail.com',
-      secure: true,
-      port: 465,
-      family: 4,
-      auth: {
-        user: process.env.EMAIL || "",
-        pass: process.env.PASSWORD || "",
-      },
+    const { data, error } = await resend.emails.send({
+      from: process.env.EMAIL_FROM || "onboarding@resend.dev",
+      to: [to],
+      subject: subject,
+      html: html,
     });
 
-    await transporter.verify()
-    console.log("SMTP connected");
+    if (error) {
+      console.error("Resend API error:", error);
+      throw new Error(`Resend API error: ${error.message}`);
+    }
 
-    const mailOptions = {
-      from: process.env.EMAIL,
-      to,
-      subject,
-      html,
-    };
-    return await transporter.sendMail(mailOptions);
-
+    console.log("Email Send Successful");
+    return data;
   } catch (err) {
-    console.error("Nodemailer send email error:", err);
-    throw new Error("SMTP email transport failed");
+    console.error("Resend send email error:", err);
+    throw new Error("Resend email transport failed");
   }
 };
+
+// const sendEmail = async (to: string, subject: string, html: string) => {  
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       service: 'gmail',
+//       // host: process.env.SMTP_HOST || "smtp.mailtrap.io",
+//       host: 'smtp.gmail.com',
+//       secure: true,
+//       port: 465,
+//       family: 4,
+//       auth: {
+//         user: process.env.EMAIL || "",
+//         pass: process.env.PASSWORD || "",
+//       },
+//     });
+
+//     await transporter.verify()
+//     console.log("SMTP connected");
+
+//     const mailOptions = {
+//       from: process.env.EMAIL,
+//       to,
+//       subject,
+//       html,
+//     };
+//     return await transporter.sendMail(mailOptions);
+
+//   } catch (err) {
+//     console.error("Nodemailer send email error:", err);
+//     throw new Error("SMTP email transport failed");
+//   }
+// };
 
 const refreshToken = async (req: any, res: e.Response, next: e.NextFunction) => {
   try {
