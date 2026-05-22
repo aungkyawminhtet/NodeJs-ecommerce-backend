@@ -11,15 +11,15 @@ const swaggerSpec = {
   },
   servers: [
     {
-      url: "http://localhost:3001",
+      url: process.env.SWAGGER_URL,
       description: "Local Development Server",
     },
     {
-      url: "https://api.staging.yourdomain.com",
+      url: process.env.SWAGGER_URL,
       description: "Staging Sandbox Server",
     },
     {
-      url: "https://api.yourdomain.com",
+      url: process.env.SWAGGER_URL,
       description: "Production API Gate",
     },
   ],
