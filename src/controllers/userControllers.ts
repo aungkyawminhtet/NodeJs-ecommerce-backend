@@ -28,15 +28,13 @@ const register = async (
       return next(new Error("User already exists"));
     }
 
-    // Generate email verification token
     const verificationToken = crypto.randomBytes(32).toString("hex");
     req.body.emailVerificationToken = verificationToken;
 
     const createUser = await new DB(req.body).save();
 
-    // Asynchronously send verification email (doesn't block response)
     const { sendEmail } = require("./authController");
-    const verificationLink = `${process.env.FRONTEND_URL || "http://localhost:3000"}/verify-email?token=${verificationToken}`;
+    const verificationLink = `${process.env.FRONTEND_URL || "http://localhost:3000/api/v1/auth"}/verify-email?token=${verificationToken}`;
     const emailHtml = `
       <h1>Welcome to our E-Commerce Platform!</h1>
       <p>Thank you for signing up. Please verify your email by clicking the button below:</p>
@@ -67,7 +65,6 @@ const login = async (req: any, res: e.Response, next: e.NextFunction) => {
       return next(new Error("Invalid password"));
     }
 
-    // Generate new Access and Refresh tokens
     const tokens = generateTokens(user.toObject());
 
     const result = {
@@ -76,10 +73,8 @@ const login = async (req: any, res: e.Response, next: e.NextFunction) => {
     };
     delete result.password;
 
-    // Cache access token user state in Redis
     await setCache(user._id.toString(), result);
 
-    // Save refresh token in Redis (valid for 7 days)
     await setCache(`refreshToken:${user._id.toString()}`, tokens.refreshToken);
 
     // Set HTTP-Only Cookie for Refresh Token
@@ -89,6 +84,8 @@ const login = async (req: any, res: e.Response, next: e.NextFunction) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       sameSite: "strict",
     });
+
+    // console.log("user cookie", req.cookies);
 
     fMs(res, "User logged in successfully", result);
   } catch (err) {
@@ -226,7 +223,8 @@ const allUser = async (
 ) => {
   const users = await DB.find()
     .populate("roles permits", "-__v")
-    .select("-__v -password");
+    .select("-__v -password")
+    .sort({createdAt: -1});
   fMs(res, "All users", users);
 };
 

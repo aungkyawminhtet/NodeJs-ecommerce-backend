@@ -1,29 +1,61 @@
 const UserDB = require("../models/user");
 const crypto = require("crypto");
+// const { Resend } = require("resend");
 const nodemailer = require("nodemailer");
 const { fMs, encode, generateTokens, verifyRefreshToken, setCache, getCache, deleteCache } = require("../utils/helper");
 import type e = require("express");
 
+// const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy");
+
 // Helper to send emails
-const sendEmail = async (to: string, subject: string, html: string) => {
+// const sendEmail = async (to: string, subject: string, html: string) => {
+//   console.log("This is Send Email function using Resend");
+  
+//   try {
+//     const { data, error } = await resend.emails.send({
+//       from: process.env.EMAIL_FROM || "onboarding@resend.dev",
+//       to: [to],
+//       subject: subject,
+//       html: html,
+//     });
+
+//     if (error) {
+//       console.error("Resend API error:", error);
+//       throw new Error(`Resend API error: ${error.message}`);
+//     }
+
+//     console.log("Email Send Successful:", data);
+//     return data;
+//   } catch (err) {
+//     console.error("Resend send email error:", err);
+//     throw new Error("Resend email transport failed");
+//   }
+// };
+
+const sendEmail = async (to: string, subject: string, html: string) => {  
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.mailtrap.io",
-      port: Number(process.env.SMTP_PORT) || 2525,
+      sevice: 'gmail',
+      // host: process.env.SMTP_HOST || "smtp.mailtrap.io",
+      host: 'smtp.gmail.com',
+      secure: true,
+      port: 465,
       auth: {
-        user: process.env.SMTP_USER || "",
-        pass: process.env.SMTP_PASS || "",
+        user: process.env.EMAIL || "",
+        pass: process.env.PASSWORD || "",
       },
     });
 
-    const mailOptions = {
-      from: `"E-Commerce Backend" <noreply@ecommerce.com>`,
-      to: "aung24434@gmail.com",
-      subject:"Hello, this is testing.",
-      html: "<p>Hello world?</p>",
-    };
+    const data = transporter.verify()
 
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to,
+      subject,
+      html,
+    };
     return await transporter.sendMail(mailOptions);
+
   } catch (err) {
     console.error("Nodemailer send email error:", err);
     throw new Error("SMTP email transport failed");
@@ -43,13 +75,11 @@ const refreshToken = async (req: any, res: e.Response, next: e.NextFunction) => 
       return next(new Error("Invalid or expired refresh token"));
     }
 
-    // Verify refresh token exists in Redis Cache
     const cachedToken = await getCache(`refreshToken:${decoded._id}`);
     if (cachedToken !== rToken) {
       return next(new Error("Session expired or token rotated"));
     }
 
-    // Fetch user details
     const user = await UserDB.findById(decoded._id)
       .populate("roles permits", "-__v")
       .select("-__v -password");
@@ -58,13 +88,10 @@ const refreshToken = async (req: any, res: e.Response, next: e.NextFunction) => 
       return next(new Error("User not found"));
     }
 
-    // Generate new Access and Refresh tokens
     const tokens = generateTokens(user.toObject());
 
-    // Save new refresh token in Redis (valid for 7 days)
     await setCache(`refreshToken:${user._id.toString()}`, tokens.refreshToken);
 
-    // Save access token cached user state
     await setCache(user._id.toString(), {
       ...user.toObject(),
       token: tokens.accessToken,
@@ -130,7 +157,7 @@ const forgotPassword = async (req: e.Request, res: e.Response, next: e.NextFunct
     await user.save();
 
     // Send reset link
-    const resetLink = `${process.env.FRONTEND_URL || "http://localhost:3000"}/reset-password?token=${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL || "http://localhost:3000/api/v1/auth"}/reset-password?token=${resetToken}`;
     const emailHtml = `
       <h1>Reset Your Password</h1>
       <p>Click the link below to reset your password. This link is valid for 1 hour.</p>
@@ -139,6 +166,7 @@ const forgotPassword = async (req: e.Request, res: e.Response, next: e.NextFunct
     `;
 
     await sendEmail(user.email, "Reset Your Password", emailHtml);
+    
     fMs(res, "Password reset link sent to your email", null);
   } catch (err) {
     next(err);
@@ -176,6 +204,7 @@ const resetPassword = async (req: e.Request, res: e.Response, next: e.NextFuncti
 const verifyEmail = async (req: e.Request, res: e.Response, next: e.NextFunction) => {
   try {
     const token = req.query.token || req.body.token;
+    console.log("This is Verification Token", token);
     if (!token) {
       return next(new Error("Verification token is required"));
     }
@@ -201,5 +230,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   verifyEmail,
-  sendEmail, // Exposed to be used during registration as well
+  sendEmail,
 };

@@ -17,7 +17,7 @@ const {
 const { productSchema, idSchema } = require("../utils/schema");
 const { saveFile, saveMultiFiles } = require("../utils/saveFiles");
 
-router.get("/", getAllProduct);
+router.get("/", validateToken, getAllProduct);
 
 router.get("/paginate/:page", paginateProduct);
 

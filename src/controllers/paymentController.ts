@@ -11,7 +11,6 @@ const createCheckoutSession = async (req: any, res: e.Response, next: e.NextFunc
       return next(new Error("orderId is required"));
     }
 
-    // Find order and populate its items
     const order = await orderDB.findById(orderId).populate("items");
     if (!order) {
       return next(new Error("Order not found"));
@@ -25,7 +24,6 @@ const createCheckoutSession = async (req: any, res: e.Response, next: e.NextFunc
       return next(new Error("Order has already been paid"));
     }
 
-    // Map order items to Stripe line items
     const lineItems = order.items.map((item: any) => {
       return {
         price_data: {
