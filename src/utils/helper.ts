@@ -1,7 +1,22 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 import type e = require("express");
-const Redis = require("async-redis").createClient();
+let Redis: any;
+
+if (process.env.DISABLE_REDIS === "true") {
+  Redis = {
+    get: async () => null,
+    set: async () => "OK",
+    del: async () => 1,
+  };
+} else {
+  try {
+    Redis = require("async-redis").createClient();
+  } catch (error) {
+    console.error("Failed to connect to Redis. If you don't have Redis running, set DISABLE_REDIS=true in your environment variables/dotenv file.");
+    throw error;
+  }
+}
 
 const fMs = async (res: e.Response, msg: string, result: any[]) => {
   res.status(200).json({
