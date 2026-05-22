@@ -35,18 +35,20 @@ import type e = require("express");
 const sendEmail = async (to: string, subject: string, html: string) => {  
   try {
     const transporter = nodemailer.createTransport({
-      sevice: 'gmail',
+      service: 'gmail',
       // host: process.env.SMTP_HOST || "smtp.mailtrap.io",
       host: 'smtp.gmail.com',
       secure: true,
       port: 465,
+      family: 4,
       auth: {
         user: process.env.EMAIL || "",
         pass: process.env.PASSWORD || "",
       },
     });
 
-    const data = transporter.verify()
+    await transporter.verify()
+    console.log("SMTP connected");
 
     const mailOptions = {
       from: process.env.EMAIL,
